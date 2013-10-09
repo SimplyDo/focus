@@ -22,7 +22,7 @@
 <div class="container" ng-hide="todo || searchTerm">
   <div class="row">
     <div class="col-sm-4 col-md-3">
-      <div ng-include="'views/_listnavigation.html'"></div>
+      <div ng-include="'views/partiallistnavigation.html'"></div>
     </div>
 
     <!-- List views -->
@@ -49,7 +49,7 @@
       </div>
       <ul class="todo-list" ui-sortable="sortableOptions" ng-model="todos">
         <li class="todo-list-item" ng-repeat="todo in todos | filter:{text:omniBox,tagList:tagFilter}" ng-hide="todo.done || todo.category != categoryFilter">
-          <div ng-include="'views/_todoitem.html'" ng-init="sortable = true"></div>
+          <div ng-include="'views/partialtodoitem.html'" ng-init="sortable = true"></div>
         </li>
       </ul>
       <div class="todo-list-subsection-header" ng-show="countTodos(0,categoryFilter).done > 0">
@@ -57,7 +57,7 @@
       </div>
       <ul class="todo-list">
         <li class="todo-list-item" ng-repeat="todo in todos | filter:{done:true,category:categoryFilter} | orderBy:'doneDate':true | limitTo:10">
-          <div ng-include="'views/_todoitem.html'" class="todo-list-item-container"></div>
+          <div ng-include="'views/partialtodoitem.html'" class="todo-list-item-container"></div>
         </li>
       </ul>
       <div ng-init="manage=false">
@@ -118,7 +118,7 @@
 
           <ul class="todo-list">
             <li class="todo-list-item" ng-repeat="todo in todos | filter:{done:false,tagList:tagFilter} | orderBy:'dueDate':false" ng-show="relativeDueDate(todo.dueDate) <= 1">
-              <div ng-include="'views/_todoitem.html'" ng-init="showCategory = true"></div>
+              <div ng-include="'views/partialtodoitem.html'" ng-init="showCategory = true"></div>
             </li>
           </ul>
 
@@ -134,7 +134,7 @@
 
         <ul class="todo-list">
           <li class="todo-list-item" ng-repeat="todo in todos | filter:{done:false,starred:true,tagList:tagFilter}">
-            <div ng-include="'views/_todoitem.html'" ng-init="showCategory = true"></div>
+            <div ng-include="'views/partialtodoitem.html'" ng-init="showCategory = true"></div>
           </li>
         </ul>
 
@@ -152,7 +152,7 @@
 
         <ul class="todo-list">
           <li class="todo-list-item" ng-repeat="todo in todos | filter:{done:false,category:category.id,tagList:tagFilter} | limitTo:itemsPerList">
-            <div ng-include="'views/_todoitem.html'"></div>
+            <div ng-include="'views/partialtodoitem.html'"></div>
           </li>
         </ul>
 
@@ -169,7 +169,7 @@
 
         <ul class="todo-list">
           <li class="todo-list-item" ng-repeat="todo in todos | filter:{done:true} | orderBy:'doneDate':true | limitTo:10">
-            <div ng-include="'views/_todoitem.html'"></div>
+            <div ng-include="'views/partialtodoitem.html'"></div>
           </li>
         </ul>
 
