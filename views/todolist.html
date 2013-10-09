@@ -192,7 +192,7 @@
       </div>
       <ul class="todo-list">
         <li class="todo-list-item" ng-repeat="todo in todos | filter:searchTerm">
-          <div ng-include="'views/_todoitem.html'" ng-init="showCategory = true"></div>
+          <div ng-include="'views/partialtodoitem.html'" ng-init="showCategory = true"></div>
         </li>
       </ul>
     </div>
