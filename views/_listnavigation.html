@@ -1,0 +1,38 @@
+<div class="system-list-nav">
+
+  <a ng-click="showToday(true)" class="list-nav-item" ng-class="{active: today == true}">
+    <span ng-show="(countTodos(0).starred + countTodos(0).due) > 0" class="label pull-right" ng-class="{'label-danger': countTodos(0).due > 0}">{{countTodos(0).starred + countTodos(0).due}}</span>
+    Today
+  </a>
+
+  <a ng-click="showList(category.id)" class="list-nav-item" ng-class="{active: categoryFilter == category.id && !today}" ng-repeat="category in systemCategories">
+    <span ng-show="countTodos(0,category.id).open > 0" class="label pull-right" ng-class="{'label-danger': countTodos(0,category.id).due > 0}">{{countTodos(0,category.id).open}}</span>
+    {{category.label}}
+  </a>
+
+</div>
+<div class="list-nav" ng-show="categories.length > 0">
+  <a ng-click="showList(category.id)" class="list-nav-item" ng-class="{active: categoryFilter == category.id && !today}" ng-repeat="category in categories">
+    <span ng-show="countTodos(0,category.id).open > 0" class="label pull-right" ng-class="{'label-danger': countTodos(0,category.id).due > 0}">{{countTodos(0,category.id).open}}</span>
+    {{category.label}}
+  </a>
+</div>
+
+<div ng-init="addList=false">
+  <div class="manage-list-controls" ng-hide="addList">
+    <a ng-click="addList=true">Add List <i class="icon-down"></i></a>
+  </div>
+  <div ng-show="addList" class="manage-list">
+    <div class="manage-list-controls">
+      <a ng-click="addList=false">Close <i class="icon-up"></i></a>
+    </div>
+    <form name="categoryForm" ng-submit="createCategory(categoryInput); addList='';">
+      <div class="input-group">
+        <input type="text" ng-model="categoryInput" placeholder="New List..." class="form-control" required="">
+        <span class="input-group-btn">
+          <button class="btn btn-primary" ng-disabled="!categoryForm.$valid" type="submit">Add</button>
+        </span>
+      </div><!-- /input-group -->
+    </form>
+  </div>
+</div>

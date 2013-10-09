@@ -1,0 +1,38 @@
+<a ng-click="toggleDone(todo)" class="todo-list-item-tick">
+  <i ng-hide="todo.done" class="icon-box"></i>
+  <i ng-show="todo.done" class="icon-box-checked"></i>
+  <!-- <input type="checkbox" class="todo-list-item-tick" ng-model="todo.done" /> -->
+</a>
+
+
+
+<a ng-click="toggleStar(todo)" ng-hide="todo.done" class="todo-list-item-star">
+  <i ng-hide="todo.starred" class="icon-star-false"></i>
+  <i ng-show="todo.starred" class="icon-star-true"></i>
+</a>
+
+<div class="todo-list-item-text todo-list-item-text-{{todo.done}}">
+
+  <span ng-show="todo.dueDate && relativeDueDate(todo.dueDate) < 0 && !todo.done" class="label label-danger">Overdue</span> 
+  <span ng-show="todo.dueDate && relativeDueDate(todo.dueDate) == 0 && !todo.done" class="label label-danger">Today</span> 
+  <span ng-show="todo.dueDate && relativeDueDate(todo.dueDate) > 0 && !todo.done" class="label label-default" ng-pluralize="" count="relativeDueDate(todo.dueDate)" when="{'one': 'Tomorrow','other': '{} days'}">
+  </span> 
+  <a ng-click="showTodo(todo)" class="todo-list-item-text-link">
+    {{stripHashTags(todo.text)}}
+  </a>
+
+  <a ng-hide="todo.done" ng-click="changeTagFilter(tag)" class="tag-filter-item" ng-repeat="tag in tags(todo)">
+    {{tag}}
+  </a>
+
+  <a ng-show="showCategory" ng-click="showList(todo.category);" class="todo-list-item-category">{{getCategoryLabel(todo.category)}} <i class="icon-right"></i></a>
+
+</div>
+
+<a ng-click="deleteTodo(todo.UUID)" class="todo-list-item-options todo-list-item-options-delete"><i class="icon-delete"></i></a>
+
+<a ng-hide="todo.done || !todo.description" ng-click="showTodo(todo)" class="todo-list-item-options"><i class="icon-note"></i></a>
+
+<div ng-hide="tagFilter || omniBox || !sortable" class="todo-list-item-options todo-list-item-options-sortable">
+  <i class="icon-dots-tower"></i>
+</div>

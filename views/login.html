@@ -1,0 +1,98 @@
+<div class="font-page-header">
+  <div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+          <div class="font-page-header-logo">
+            Simply Focus
+          </div>
+          <div class="font-page-header-subtitle">
+            An easy to use task manager that helps you to work smarter.
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+
+    <div class="col-sm-5 col-md-4 col-md-offset-1" ng-init="showForm = 'signup'" ng-show="showForm == 'login'">
+
+      <form role="form" class="loginForm" ng-submit="login(form);">
+        <p class="loginForm-errorMessage">{{errorMessage}}</p>
+        <div class="form-group">
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icon-user"></i></span>
+            <input type="email" class="form-control input-lg" ng-model="form.email" placeholder="Email" required="">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icon-lock-open"></i></span>
+            <input type="password" ng-model="form.password" class="form-control input-lg" placeholder="Password" required="">
+          </div>
+        </div>
+        <div class="checkbox loginForm-rememberMe">
+          <label>
+            <input type="checkbox" ng-model="form.rememberMe"> Remember me
+          </label>
+        </div>
+        <button ng-disabled="submitted" type="submit" class="btn btn-lg btn-block btn-primary">
+          <span ng-hide="submitted">Login</span>
+          <span ng-show="submitted">Processing ...</span>
+        </button>
+        <p class="loginForm-tip text-left">No account yet? <a ng-click="showForm = 'signup'; errorMessage = '';">Sign up <i class="icon-right"></i></a></p>
+      </form>
+
+    </div>
+
+    <div class="col-sm-5 col-md-4 col-md-offset-1 col-sm-push-7 col-md-push-6" ng-show="showForm == 'signup'">
+
+      <form role="form" class="loginForm" ng-submit="signUp(form);">
+        <p class="loginForm-errorMessage">{{errorMessage}}</p>
+        <div class="form-group">
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icon-user"></i></span>
+            <input type="email" class="form-control input-lg" ng-model="form.email" placeholder="Email" required="">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icon-lock-closed"></i></span>
+            <input type="password" ng-model="form.password" class="form-control input-lg" placeholder="Password" required="">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icon-lock-closed"></i></span>
+            <input type="password" ng-model="form.passwordConfirm" class="form-control input-lg" placeholder="Confirm Password" required="">
+          </div>
+        </div>
+        <button ng-disabled="submitted" type="submit" class="btn btn-lg btn-block btn-success">
+          <span ng-hide="submitted">Sign Up</span>
+          <span ng-show="submitted">Processing ...</span>
+        </button>
+        <p class="loginForm-tip text-left"><a ng-click="showForm = 'login'; errorMessage = '';"><i class="icon-left"></i> Login</a> if you have an accout. </p>
+      </form>
+
+    </div>
+
+    <div class="col-sm-6 col-sm-offset-1 col-md-5 col-md-offset-1" ng-class="{'col-sm-pull-6 col-md-pull-5': showForm == 'signup'}">
+      <ul class="feature-list">
+        <li class="feature-list-item"><i class="icon-notebook"></i> Capture all your tasks quickly and easily.</li>
+        <li class="feature-list-item"><i class="icon-focus"></i> Focus your attention.</li>
+        <li class="feature-list-item"><i class="icon-drink"></i> Honor your time.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="row">
+
+    <div class="col-sm-12">
+      <div class="font-page-devices"><i class="icon-laptop"></i><i class="icon-tablet"></i><i class="icon-phone"></i><br>Works on all devices.</div>
+    </div>
+
+
+  </div>
+</div>
