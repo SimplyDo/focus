@@ -22,11 +22,20 @@
 <div class="container" ng-hide="todo || searchTerm">
   <div class="row">
     <div class="col-sm-4 col-md-3">
-      <div ng-include="'views/partiallistnavigation.html'"></div>
+      <div ng-class="{hidenavigation: showNavigation == false}">
+        <div ng-include="'views/partiallistnavigation.html'"></div>
+      </div>
+
+      <!-- Small screen only navigation to show the navigation -->
+      <div class="mobile-back-button" ng-hide="showNavigation">
+        <a ng-click="showNavigation = true"><i class="icon-left"></i> Back to all Lists</a>
+      </div>
     </div>
 
+    
+
     <!-- List views -->
-    <div class="col-sm-8 col-md-9" ng-hide="today">
+    <div class="col-sm-8 col-md-9" ng-hide="today" ng-class="{hidecontent: showNavigation == true}">
       <form name="newTodoForm" ng-submit="createTodo(omniBox,categoryFilter); omniBox='';" class="todo-list-header">
         <div class="input-group">
           <input type="text" ng-model="omniBox" placeholder="Filter {{getCategoryLabel(categoryFilter)}} or add a new todo..." class="form-control" required="">
@@ -86,7 +95,7 @@
 
 
 
-    <div class="col-sm-8 col-md-9" ng-show="today && !searchTerm">
+    <div class="col-sm-8 col-md-9" ng-show="today && !searchTerm" ng-class="{hidecontent: showNavigation == true}">
       <div class="todo-list-header">
          Shows starred items and items that are due today or tomorrow. Includes 
           <select class="" ng-init="itemsPerList = 1" ng-model="itemsPerList">
