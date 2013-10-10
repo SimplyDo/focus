@@ -11,8 +11,9 @@
   </a>
 
 </div>
-<div class="list-nav" ng-show="categories.length > 0">
+<div class="list-nav" ng-show="categories.length > 0" ui-sortable="sortableOptionsCategories" ng-model="categories">
   <a ng-click="showList(category.id)" class="list-nav-item" ng-class="{active: categoryFilter == category.id && !today}" ng-repeat="category in categories">
+    <i class="icon-list list-nav-item-handle pull-right"></i>
     <span ng-show="countTodos(0,category.id).open > 0" class="label pull-right" ng-class="{'label-danger': countTodos(0,category.id).due > 0}">{{countTodos(0,category.id).open}}</span>
     {{category.label}}
   </a>
