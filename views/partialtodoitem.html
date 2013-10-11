@@ -25,7 +25,7 @@
     {{tag}}
   </a>
 
-  <a ng-show="showCategory" ng-click="showList(todo.category);" class="todo-list-item-category">{{getCategoryLabel(todo.category)}} <i class="icon-right"></i></a>
+  <a ng-show="showCategory" ng-click="showList(getCategoryByID(todo.category));" class="todo-list-item-category">{{getCategoryByID(todo.category).label}} <i class="icon-right"></i></a>
 
 </div>
 

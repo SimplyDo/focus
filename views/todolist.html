@@ -19,7 +19,7 @@
 
 
 <!-- Todos view (lists, today and all) -->
-<div class="container" ng-hide="todo || searchTerm">
+<div class="container" ng-if="!todo && !searchTerm">
   <div class="row">
     <div class="col-sm-4 col-md-3">
       <div ng-class="{hidenavigation: showNavigation == false}">
@@ -35,57 +35,49 @@
     
 
     <!-- List views -->
-    <div class="col-sm-8 col-md-9" ng-hide="today" ng-class="{hidecontent: showNavigation == true}">
-      <form name="newTodoForm" ng-submit="createTodo(omniBox,categoryFilter); omniBox='';" class="todo-list-header">
+    <div class="col-sm-8 col-md-9" ng-if="!today" ng-class="{hidecontent: showNavigation == true}">
+      <form name="newTodoForm" ng-submit="createTodo(omniBox,currentCategory.id); omniBox='';" class="todo-list-header">
         <div class="input-group">
-          <input type="text" ng-model="omniBox" placeholder="Filter {{getCategoryLabel(categoryFilter)}} or add a new todo..." class="form-control" required="">
+          <input type="text" ng-model="omniBox" placeholder="Filter {{currentCategory.label}} or add a new todo..." class="form-control" required="">
           <span class="input-group-btn">
             <button type="submit" class="btn btn-success icon-plus" ng-disabled="!newTodoForm.$valid"></button>
-            <a class="btn btn-primary icon-dots" ng-disabled="!newTodoForm.$valid" ng-click="createTodo(omniBox,categoryFilter,true); omniBox='';"></a>
+            <a class="btn btn-primary icon-dots" ng-disabled="!newTodoForm.$valid" ng-click="createTodo(omniBox,currentCategory.id,true); omniBox='';"></a>
           </span>
         </div>
       </form>
 
-      <div class="tag-filter" ng-show="getTags(categoryFilter).length > 0">
+      <div class="tag-filter" ng-show="getTags(currentCategory.id).length > 0">
         <a ng-click="changeTagFilter()" class="pull-right clear-tag-filter-link" ng-show="tagFilter">X</a>
-        <a ng-click="changeTagFilter(tag)" class="tag-filter-item" ng-repeat="tag in getTags(categoryFilter)" ng-class="{active: tagFilter == tag}">
+        <a ng-click="changeTagFilter(tag)" class="tag-filter-item" ng-repeat="tag in getTags(currentCategory.id)" ng-class="{active: tagFilter == tag}">
           {{tag}}
         </a>
       </div>
 
-      <div class="blank-slate-message" ng-hide="countTodos(0,categoryFilter).all > 0">
-        {{getCategoryLabel(categoryFilter)}} is empty. Start by adding some todos to this list...
+      <div class="blank-slate-message" ng-hide="countTodos(0,currentCategory.id).open > 0">
+        There are no open todos in {{currentCategory.label}}. Start by adding some todos to this list...
       </div>
       <ul class="todo-list" ui-sortable="sortableOptionsTodos" ng-model="todos">
-        <li class="todo-list-item" ng-repeat="todo in todos | filter:{text:omniBox,tagList:tagFilter}" ng-hide="todo.done || todo.category != categoryFilter">
+        <li class="todo-list-item" ng-repeat="todo in todos | filter:{text:omniBox,tagList:tagFilter}" ng-hide="todo.category != currentCategory.id">
           <div ng-include="'views/partialtodoitem.html'" ng-init="sortable = true"></div>
-        </li>
-      </ul>
-      <div class="todo-list-subsection-header" ng-show="countTodos(0,categoryFilter).done > 0">
-        Recently closed
-      </div>
-      <ul class="todo-list">
-        <li class="todo-list-item" ng-repeat="todo in todos | filter:{done:true,category:categoryFilter} | orderBy:'doneDate':true | limitTo:10">
-          <div ng-include="'views/partialtodoitem.html'" class="todo-list-item-container"></div>
         </li>
       </ul>
       <div ng-init="manage=false">
         <div class="manage-list-controls" ng-hide="manage">
-          <a ng-click="manage=true">Manage {{getCategoryLabel(categoryFilter)}} <i class="icon-down"></i></a>
+          <a ng-click="manage=true">Manage {{currentCategory.label}} <i class="icon-down"></i></a>
         </div>
         <div ng-show="manage" class="manage-list">
           <div class="manage-list-controls">
             <a ng-click="manage=false">Close <i class="icon-up"></i></a>
           </div>
-          <div class="form-group" ng-hide="getCategoryByID(categoryFilter).type == 'system'">
+          <div class="form-group" ng-hide="currentCategory.type == 'system'">
             <label for="listname">List Name</label>
-            <input type="text" class="form-control" id="listname" ng-model="getCategoryByID(categoryFilter).label">
+            <input type="text" class="form-control" id="listname" ng-model="currentCategory.label">
           </div>
           <div class="form-group">
-            <label for="listname" ng-hide="getCategoryByID(categoryFilter).type == 'system'">Other options</label>
+            <label for="listname" ng-hide="currentCategory.type == 'system'">Other options</label>
             <div>
-              <a ng-click="deleteAll(categoryFilter,false);" class="btn btn-warning">Delete all todos</a> 
-              <a ng-hide="getCategoryByID(categoryFilter).type == 'system'" ng-click="manage=false;deleteAll(categoryFilter,true);" class="btn btn-warning">Delete list</a> 
+              <a ng-click="deleteAll(currentCategory.id,false);" class="btn btn-warning">Delete all todos</a> 
+              <a ng-hide="currentCategory.type == 'system'" ng-click="manage=false;deleteAll(currentCategory.id,true);" class="btn btn-warning">Delete list</a> 
             </div>
           </div>
         </div>
@@ -95,18 +87,9 @@
 
 
 
-    <div class="col-sm-8 col-md-9" ng-show="today && !searchTerm" ng-class="{hidecontent: showNavigation == true}">
+    <div class="col-sm-8 col-md-9" ng-if="today && !searchTerm" ng-class="{hidecontent: showNavigation == true}">
       <div class="todo-list-header">
-         Shows starred items and items that are due today or tomorrow. Includes 
-          <select class="" ng-init="itemsPerList = 1" ng-model="itemsPerList">
-            <option>0</option>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>5</option>
-            <option>10</option>
-          </select>
-          <ng-pluralize count="itemsPerList" when="{'one': 'item','other': 'items'}"></ng-pluralize> from each list.
+         Shows starred items and items that are due today or tomorrow.
       </div>
 
 
@@ -133,9 +116,6 @@
 
       </div>
 
-
-
-
       <div ng-show="countTodos(1).starred > 0">
 
         <div class="todo-list-subsection-header">Starred</div>
@@ -151,38 +131,29 @@
 
 
       <!-- iterating over custom lists -->
-
-
-      <div ng-hide="itemsPerList == 0" ng-repeat="category in categories" ng-show="countTodos(0,category.id).open > 0">
-
-        <a class="todo-list-subsection-header" ng-click="showList(category.id)">
-          {{category.label}} <i class="icon-right"></i>
-        </a>
-
-        <ul class="todo-list">
-          <li class="todo-list-item" ng-repeat="todo in todos | filter:{done:false,category:category.id,tagList:tagFilter} | limitTo:itemsPerList">
-            <div ng-include="'views/partialtodoitem.html'"></div>
-          </li>
-        </ul>
-
-      </div>
-
-      <!-- Showing recently closed todos -->
-
-
-      <div>
-
-        <div class="todo-list-subsection-header" ng-show="countTodos(0).done > 0">
-          Recently closed
+      <div class="todo-list-subsection-header">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" ng-model="includeTopItems">
+              Include top items
+          </label>
         </div>
-
-        <ul class="todo-list">
-          <li class="todo-list-item" ng-repeat="todo in todos | filter:{done:true} | orderBy:'doneDate':true | limitTo:10">
-            <div ng-include="'views/partialtodoitem.html'"></div>
-          </li>
-        </ul>
-
       </div>
+
+      <div ng-if="includeTopItems"> 
+
+        <div ng-repeat="category in categories" ng-show="countTodos(0,category.id).open > 0">
+
+
+          <ul class="todo-list">
+            <li class="todo-list-item" ng-repeat="todo in todos | filter:{done:false,category:category.id,tagList:tagFilter} | limitTo:1">
+              <div ng-include="'views/partialtodoitem.html'" ng-init="showCategory = true"></div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+
 
     </div>
   </div>
@@ -193,7 +164,7 @@
 
 <!-- search results view -->
 
-<div class="container" ng-show="searchTerm">
+<div class="container" ng-if="searchTerm">
   <div class="row">
     <div class="col-sm-12">
       <div class="todo-list-header">
@@ -213,7 +184,7 @@
 
 
 <!-- Todo view -->
-<div class="container" ng-show="todo && !searchTerm">
+<div class="container" ng-if="todo && !searchTerm">
 
   <form name="todoForm" class="todoForm" ng-submit="updateTodo(todo); showTodo();">
 
