@@ -19,7 +19,7 @@
 
 
 <!-- Todos view (lists, today and all) -->
-<div class="container" ng-if="!todo && !searchTerm">
+<div class="container" ng-show="!todo && !searchTerm">
   <div class="row">
     <div class="col-sm-4 col-md-3">
       <div ng-class="{hidenavigation: showNavigation == false}">
@@ -63,7 +63,7 @@
       </ul>
       <div ng-init="manage=false">
         <div class="manage-list-controls" ng-hide="manage">
-          <a ng-click="manage=true">Manage {{currentCategory.label}} <i class="icon-down"></i></a>
+          <a ng-click="manage=true">Manage List {{currentCategory.label}} <i class="icon-down"></i></a>
         </div>
         <div ng-show="manage" class="manage-list">
           <div class="manage-list-controls">
