@@ -56,7 +56,7 @@
       <div class="blank-slate-message" ng-hide="countTodos(0,currentCategory.id).open > 0">
         There are no open todos in {{currentCategory.label}}. Start by adding some todos to this list...
       </div>
-      <ul class="todo-list" ui-sortable="sortableOptionsTodos" ng-model="todos">
+      <ul class="todo-list">
         <li class="todo-list-item" ng-repeat="todo in todos | filter:{text:omniBox,tagList:tagFilter}" ng-hide="todo.category != currentCategory.id">
           <div ng-include="'views/partialtodoitem.html'" ng-init="sortable = true"></div>
         </li>
