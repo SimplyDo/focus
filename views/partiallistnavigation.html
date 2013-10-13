@@ -27,7 +27,7 @@
     <div class="manage-list-controls">
       <a ng-click="addList=false">Close <i class="icon-up"></i></a>
     </div>
-    <form name="categoryForm" ng-submit="createCategory(categoryInput); addList='';">
+    <form name="categoryForm" ng-submit="createCategory(categoryInput); addList=''; categoryInput='';">
       <div class="input-group">
         <input type="text" ng-model="categoryInput" placeholder="New List..." class="form-control" required="">
         <span class="input-group-btn">
