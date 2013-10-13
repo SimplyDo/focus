@@ -1,10 +1,5 @@
-<div ng-hide="tagFilter || omniBox || !sortable" class="todo-list-item-options todo-list-item-options-sortable">
-  <i class="icon-list"></i>
-</div>
-
-<a ng-click="toggleDone(todo)" class="todo-list-item-tick">
-  <i ng-hide="todo.done" class="icon-box"></i>
-  <i ng-show="todo.done" class="icon-box-checked"></i>
+<a ng-click="toggleDone(todo)" class="todo-list-item-tick done-{{todo.done}}">
+  <span> </span>
 </a>
 
 
@@ -16,7 +11,7 @@
 
 <div class="todo-list-item-text todo-list-item-text-{{todo.done}}">
 
-  <span ng-show="todo.dueDate && !todo.done" class="label label-default" ng-init="duedate = relativeDueDate(todo.dueDate)" ng-class="{'label-danger': duedate <= 1}" ng-pluralize="" count="duedate" when="{0: 'Overdue',1: 'Today','2': 'Tomorrow','other': '{} days'}">
+  <span ng-show="todo.dueDate && !todo.done" class="label label-default" ng-init="duedate = relativeDueDate(todo.dueDate)" ng-class="{'label-danger': duedate <= 1}" ng-pluralize="" count="duedate" offset="1" when="{0: 'Overdue',1: 'Today','2': 'Tomorrow','other': '{} days'}">
   </span>
 
   <a ng-click="showTodo(todo)" class="todo-list-item-text-link">
@@ -34,3 +29,7 @@
 <a ng-hide="todo.done || !todo.description" ng-click="showTodo(todo)" class="todo-list-item-options"><i class="icon-note"></i></a>
 
 <a ng-click="deleteTodo(todo.UUID)" class="todo-list-item-options todo-list-item-options-delete"><i class="icon-delete"></i></a>
+
+<div ng-hide="tagFilter || omniBox || !sortable" class="todo-list-item-options todo-list-item-options-sortable">
+  <i class="icon-list"></i>
+</div>
