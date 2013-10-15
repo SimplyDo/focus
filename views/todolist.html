@@ -2,7 +2,7 @@
   <div class="row navigation">
     <div class="col-sm-4 col-xs-3">
       <div class="navigation-logo">
-        Simply Focus
+        Focus <span>BETA</span>
       </div>
     </div>
     <div class="col-sm-4 col-xs-3">
@@ -92,14 +92,6 @@
          Shows starred items and items that are due today or tomorrow.
       </div>
 
-
-      <div class="tag-filter">
-        <a ng-click="changeTagFilter()" class="pull-right clear-tag-filter-link" ng-show="tagFilter">X</a>
-        <a ng-click="changeTagFilter(tag)" class="tag-filter-item" ng-repeat="tag in getTags()" ng-class="{active: tagFilter == tag}">
-          {{tag}}
-        </a>
-      </div>
-
       <div class="blank-slate-message" ng-hide="countTodos(1).starred > 0 || countTodos(1).due > 0">
         <p>None of your todos are due or starred right now.</p><p>
       </p></div>
@@ -109,8 +101,8 @@
         <div class="todo-list-subsection-header">Due today or tomorrow</div>
 
           <ul class="todo-list">
-            <li class="todo-list-item" ng-repeat="todo in todos | filter:{done:false,tagList:tagFilter} | orderBy:'dueDate':false" ng-show="relativeDueDate(todo.dueDate) <= 1">
-              <div ng-include="'views/partialtodoitem.html'" ng-init="showCategory = true"></div>
+            <li class="todo-list-item" ng-repeat="todo in todos | filter:{done:false} | orderBy:'dueDate':false" ng-show="relativeDueDate(todo.dueDate) <= 1">
+              <div ng-include="'views/partialtodoitem.html'" ng-init="showCategory = true; tagsDontLink = true;"></div>
             </li>
           </ul>
 
@@ -122,8 +114,8 @@
 
 
         <ul class="todo-list">
-          <li class="todo-list-item" ng-repeat="todo in todos | filter:{done:false,starred:true,tagList:tagFilter}">
-            <div ng-include="'views/partialtodoitem.html'" ng-init="showCategory = true"></div>
+          <li class="todo-list-item" ng-repeat="todo in todos | filter:{done:false,starred:true}">
+            <div ng-include="'views/partialtodoitem.html'" ng-init="showCategory = true; tagsDontLink = true;"></div>
           </li>
         </ul>
 
@@ -146,8 +138,8 @@
 
 
           <ul class="todo-list">
-            <li class="todo-list-item" ng-repeat="todo in todos | filter:{done:false,category:category.id,tagList:tagFilter} | limitTo:1">
-              <div ng-include="'views/partialtodoitem.html'" ng-init="showCategory = true"></div>
+            <li class="todo-list-item" ng-repeat="todo in todos | filter:{done:false,category:category.id} | limitTo:1">
+              <div ng-include="'views/partialtodoitem.html'" ng-init="showCategory = true; tagsDontLink = true;"></div>
             </li>
           </ul>
 
@@ -164,13 +156,13 @@
 
 <!-- search results view -->
 
-<div class="container" ng-if="searchTerm">
+<div class="container" ng-show="searchTerm">
   <div class="row">
     <div class="col-sm-12">
       <div class="todo-list-header">
-        Search for {{searchTerm}}<a ng-click="searchTerm = ''" class="pull-right">Clear Search</a>
+        Search for {{searchTerm}}<a ng-click="searchTerm = false;" class="pull-right">Clear Search</a>
       </div>
-      <ul class="todo-list">
+      <ul class="todo-list" ng-if="searchTerm">
         <li class="todo-list-item" ng-repeat="todo in todos | filter:searchTerm">
           <div ng-include="'views/partialtodoitem.html'" ng-init="showCategory = true"></div>
         </li>

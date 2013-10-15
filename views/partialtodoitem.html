@@ -18,9 +18,13 @@
     {{stripHashTags(todo.text)}}
   </a>
 
-  <a ng-hide="todo.done" ng-click="changeTagFilter(tag)" class="tag-filter-item" ng-repeat="tag in tags(todo)">
+  <a ng-show="!todo.done && !tagsDontLink" ng-click="changeTagFilter(tag)" class="tag-filter-item" ng-repeat="tag in tags(todo)">
     {{tag}}
   </a>
+
+  <div ng-show="!todo.done && tagsDontLink" class="tag-filter-item" ng-repeat="tag in tags(todo)">
+    {{tag}}
+  </div>
 
   <a ng-show="showCategory" ng-init="category = getCategoryByID(todo.category);" ng-click="showList(category);" class="todo-list-item-category">{{category.label}} <i class="icon-right"></i></a>
 
