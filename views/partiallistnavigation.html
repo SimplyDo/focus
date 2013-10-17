@@ -1,0 +1,34 @@
+<div class="system-list-nav">
+
+  <a ng-click="showToday(true)" class="list-nav-item" ng-class="{active: today == true}">
+    <span ng-show="(countTasks(0,allTasks()).today) > 0" class="label pull-right">{{countTasks(0,allTasks()).today}}</span>
+    Today
+  </a>
+
+</div>
+<div class="list-nav" ng-show="lists.length > 0" ui-sortable="sortableOptionsLists" ng-model="lists">
+  <a ng-click="showList(list)" class="list-nav-item" ng-class="{active: currentList.id == list.id && !today}" ng-repeat="list in lists">
+    <i class="icon-list list-nav-item-handle pull-right"></i>
+    <span ng-show="list.tasks.length > 0" class="label pull-right">{{list.tasks.length}}</span>
+    {{list.label}}
+  </a>
+</div>
+
+<div ng-init="addList=false">
+  <div class="manage-list-controls" ng-hide="addList">
+    <a ng-click="addList=true">Add List <i class="icon-down"></i></a>
+  </div>
+  <div ng-show="addList" class="manage-list">
+    <div class="manage-list-controls">
+      <a ng-click="addList=false">Close <i class="icon-up"></i></a>
+    </div>
+    <form name="listForm" ng-submit="createList(listInput); addList=''; listInput='';">
+      <div class="input-group">
+        <input type="text" ng-model="listInput" placeholder="New List..." class="form-control" required="">
+        <span class="input-group-btn">
+          <button class="btn btn-primary" ng-disabled="!listForm.$valid" type="submit">Add</button>
+        </span>
+      </div><!-- /input-group -->
+    </form>
+  </div>
+</div>
