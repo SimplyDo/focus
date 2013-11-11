@@ -1,48 +1,66 @@
-<div class="task-view" ng-hide="deleteConfirm" ng-init="deleteConfirm = false;" ng-swipe-right="deleteConfirm = true;" ng-swipe-left="toggleDone(task)">
-  <a ng-click="toggleDone(task)" class="task-list-item-tick done-{{task.done}}">
+<div class="task-view" ng-init="deleteConfirm = false; moveTask = false;" ng-swipe-right="deleteConfirm = true;" ng-swipe-left="toggleDone(task)">
+  <a ng-click="deleteConfirm = false; moveTask = false; toggleDone(task);" class="tasks-list-item-tick done-{{task.done}}">
     <span> </span>
   </a>
 
-  <a ng-click="toggleStar(task)" ng-hide="task.done" class="task-list-item-star">
+  <div class="tasks-list-item-text tasks-list-item-text-{{task.done}}">
+
+    <a ng-click="showTask(task)" class="tasks-list-item-text-link">
+      {{stripHashTags(task.text)}}
+
+      <span ng-hide="task.done || !task.description" ng-click="showTodo(task)" class="tasks-list-item-note-indicator"><i class="icon-note"></i></span>
+
+    </a>
+
+    <a ng-show="!task.done && !tagsDontLink" ng-click="changeTagFilter(tag)" class="tag-item-link" ng-repeat="tag in tags(task)">
+      {{tag}}
+    </a>
+
+    <div ng-show="!task.done && tagsDontLink" class="tag-item" ng-repeat="tag in tags(task)">
+      {{tag}}
+    </div>
+
+    <div>
+      <span ng-show="task.dueDate && !task.done" class="tasks-list-item-due-date" ng-class="{'due-warning': relativeDueDate(task.dueDate) <= 1}" ng-pluralize="" count="relativeDueDate(task.dueDate)" offset="1" when="{0: 'Overdue',1: 'Due Today','2': 'Due Tomorrow','other': 'Due in {} days'}">
+      </span>
+
+      <a ng-if="showTasksList" ng-click="selectList(getListByID(task.list));switchMode('list')" class="tasks-list-item-list-indicator">In {{getListByID(task.list).label}} <i class="icon-right"></i></a>
+    </div>
+
+  </div>
+
+  
+
+  <a ng-click="toggleStar(task)" ng-hide="task.done" class="tasks-list-item-star">
     <i ng-hide="task.starred" class="icon-star-false"></i>
     <i ng-show="task.starred" class="icon-star-true"></i>
   </a>
 
-  <div class="task-list-item-text task-list-item-text-{{task.done}}">
+  <a ng-click="moveTask = !moveTask;" ng-hide="task.done" class="tasks-list-item-file">
+    <i ng-hide="moveTask" class="icon-down"></i>
+    <i ng-show="moveTask" class="icon-up"></i>
+  </a>
 
-    <span ng-show="task.dueDate && !task.done" class="label label-default" ng-class="{'label-danger': relativeDueDate(task.dueDate) <= 1}" ng-pluralize="" count="relativeDueDate(task.dueDate)" offset="1" when="{0: 'Overdue',1: 'Today','2': 'Tomorrow','other': '{} days'}">
-    </span>
+  <a ng-click="deleteConfirm = !deleteConfirm;" class="tasks-list-item-delete"><i class="icon-delete"></i></a>
 
-    <a ng-click="showTask(task)" class="task-list-item-text-link">
-      {{stripHashTags(task.text)}}
-    </a>
-
-    <a ng-show="!task.done && !tagsDontLink" ng-click="changeTagFilter(tag)" class="tag-filter-item" ng-repeat="tag in tags(task)">
-      {{tag}}
-    </a>
-
-    <div ng-show="!task.done && tagsDontLink" class="tag-filter-item" ng-repeat="tag in tags(task)">
-      {{tag}}
-    </div>
-
-    <a ng-if="showTasksList" ng-click="showList(getListByID(task.list));" class="task-list-item-list">{{getListByID(task.list).label}} <i class="icon-right"></i></a>
-
-  </div>
-
-  <a ng-hide="task.done || !task.description" ng-click="showTodo(task)" class="task-list-item-options"><i class="icon-note"></i></a>
-
-  <a ng-click="deleteConfirm = true;" class="task-list-item-options task-list-item-options-delete"><i class="icon-delete"></i></a>
-
-  <div ng-hide="tagFilter || omniBox || !sortable" class="task-list-item-options task-list-item-options-sortable">
+  <div ng-hide="tagFilter || omniBox || !sortable" class="tasks-list-item-handle">
     <i class="icon-list"></i>
   </div>
 </div>
 
-<div class="task-delete-view" ng-show="deleteConfirm" ng-swipe-left="deleteConfirm = false;" ng-swipe-right="deleteTask(task)">
+
+<div class="tasks-list-item-delete-confirm" ng-show="deleteConfirm" ng-swipe-left="deleteConfirm = false;" ng-swipe-right="deleteTask(task)">
   
-  <div class="task-list-item-text">
+  <div class="tasks-list-item-text">
     Delete Task?
   </div>
-  <a ng-click="deleteTask(task)" class="task-list-item-options"><i class="icon-delete"></i> Delete</a>
-  <a ng-click="deleteConfirm = false" class="task-list-item-options"><i class="icon-cancel"></i> Cancel</a>
+  <a ng-click="deleteTask(task)" class="tasks-list-item-option"><i class="icon-delete"></i> Confirm</a>
+  <a ng-click="deleteConfirm = false" class="tasks-list-item-option"><i class="icon-cancel"></i> Cancel</a>
+</div>
+
+
+<div class="tasks-list-item-move" ng-if="moveTask">
+    <a class="tasks-list-item-move-item" ng-class="{active: task.list == list.id}" ng-repeat="list in lists" ng-click="moveTaskToList(task,list.id);">
+      {{list.label}}
+    </a>
 </div>

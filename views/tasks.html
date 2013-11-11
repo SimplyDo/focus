@@ -1,148 +1,155 @@
-<div class="container">
-  <div class="row navigation">
-    <div class="col-sm-4 col-xs-3">
-      <div class="navigation-logo">
-        Focus <span>BETA</span>
-      </div>
-    </div>
-    <div class="col-sm-4 col-xs-3">
-      <a ng-click="logout()" class="pull-right">Logout</a>
-    </div>
-    <div class="col-sm-4 col-xs-6">
-      <div class="input-group">
-        <span class="input-group-addon icon-search"></span>
-        <input type="text" ng-model="searchTerm" placeholder="Search tasks..." class="">
-      </div>
-    </div>
-  </div>
+<div class="list-nav listnavanim" ng-show="showListNavigation">
+  <div ng-include="'views/partiallistnavigation.html'"></div>
 </div>
 
 
-<!-- tasks view (lists, today and all) -->
-<div class="container" ng-show="!currentTask && !searchTerm">
-  <div class="row">
-    <div class="col-sm-4 col-md-3">
-      <div ng-class="{hidenavigation: showNavigation == false}">
-        <div ng-include="'views/partiallistnavigation.html'"></div>
+<div class="title-bar">
+
+  <a class="title-bar-link" ng-mouseenter="toggleListNavigation();" ng-click="toggleListNavigation();">
+    Task Lists <i class="icon-right"></i>
+  </a>
+
+  <a ng-click="logout()" class="title-bar-link pull-right">Logout</a>
+
+</div>
+
+
+
+
+
+
+<!-- List views -->
+<div class="tasks tasklistanim" ng-show="currentMode == 'list'">
+
+  <div class="max-width-box">
+
+    <div ng-show="manageList" class="tasks-list-manager">
+
+      
+      <form ng-submit="manageList = false; updateListName(currentList,newName);" class="tasks-list-manager-form" name="listNameForm">
+        <div class="input-group">
+          <input type="text" class="form-control" id="listname" ng-model="newName">
+          <span class="input-group-btn">
+            <button class="btn btn-primary" ng-click="updateListName(currentList,newName);" type="button" ng-disabled="!listNameForm.$dirty">Rename List</button>
+          </span>
+        </div>
+
+      </form>
+
+      <div class="tasks-list-manager-options">
+        <span ng-init="deleteList = false; deleteTasks = false" ng-hide="deleteList || deleteTasks">
+          <a ng-click="deleteTasks = true" class="tasks-list-manager-options-item">Delete all tasks</a> 
+          <a ng-hide="lists.length <= 1" ng-click="deleteList = true" class="tasks-list-manager-options-item">Delete this list</a> 
+        </span>
+        <span ng-show="deleteTasks">
+          Do you really want to delete all tasks?  <a ng-click="deleteTasks = false; manageList = false; deleteAll(currentList.id,false);" class="tasks-list-manager-options-item"><i class="icon-delete"></i> Confirm</a> <a ng-click="deleteTasks = false" class="tasks-list-manager-options-item"><i class="icon-cancel"></i> Cancel</a>
+        </span>
+        <span ng-show="deleteList">
+          Dp you really want to delete this list?  <a ng-click="deleteList = false; manageList = false;deleteAll(currentList.id,true);" class="tasks-list-manager-options-item"><i class="icon-delete"></i> Confirm</a> <a ng-click="deleteList = false" class="tasks-list-manager-options-item"><i class="icon-cancel"></i> Cancel</a>
+        </span>
       </div>
 
-      <!-- Small screen only navigation to show the navigation -->
-      <div class="mobile-back-button" ng-hide="showNavigation">
-        <a ng-click="showNavigation = true"><i class="icon-left"></i> Back to all Lists</a>
+      <div class="tasks-list-manager-close">
+        <a class="" ng-click="manageList=!manageList">
+          <i class="icon-up"></i> Close Panel
+        </a>
       </div>
+
     </div>
 
-    
+    <div>
 
-    <!-- List views -->
-    <div class="col-sm-8 col-md-9" ng-if="!today" ng-class="{hidecontent: showNavigation == true}">
-      <form name="newTaskForm" ng-submit="createTask(omniBox,currentList); omniBox='';" class="task-list-header">
+      <a ng-hide="manageList" ng-click="manageList=!manageList" class="pull-right task-list-edit-list-link">
+        <i class="icon-dots-tower"></i>
+      </a>
+      <h1>{{currentList.label}}</h1>
+
+
+      <form class="tasks-new-task-form" name="newTaskForm" ng-submit="createTask(omniBox,currentList); omniBox='';">
         <div class="input-group">
-          <input type="text" ng-model="omniBox" placeholder="Filter {{currentList.label}} or add a new task..." class="form-control" required="">
+          <input type="text" ng-model="omniBox" placeholder="Add a new task to {{currentList.label}}..." class="form-control" required="">
           <span class="input-group-btn">
-            <button type="submit" class="btn btn-success icon-plus" ng-disabled="!newTaskForm.$valid"></button>
-            <a class="btn btn-primary icon-dots" ng-disabled="!newTaskForm.$valid" ng-click="createTask(omniBox,currentList,true); omniBox='';"></a>
+            <button type="submit" class="btn btn-success" ng-disabled="!newTaskForm.$valid">Add Task</button>
+            <!-- 
+              <a class="btn btn-primary icon-dots" ng-disabled="!newTaskForm.$valid" ng-click="createTask(omniBox,currentList,true); omniBox='';"></a>
+            -->
           </span>
         </div>
       </form>
 
-      <div class="tag-filter" ng-show="getTags(currentList).length > 0">
-        <a ng-click="changeTagFilter()" class="pull-right clear-tag-filter-link" ng-show="tagFilter">X</a>
-        <a ng-click="changeTagFilter(tag)" class="tag-filter-item" ng-repeat="tag in getTags(currentList)" ng-class="{active: tagFilter == tag}">
+      <div class="tasks-tag-filter" ng-show="getTags(currentList).length > 0">
+        <a ng-click="changeTagFilter()" class="pull-right tasks-clear-tag-filter" ng-show="tagFilter"><i class="icon-cancel"></i></a>
+        <a ng-click="changeTagFilter(tag)" class="tag-filter-item-link" ng-repeat="tag in getTags(currentList)" ng-class="{active: tagFilter == tag}">
           {{tag}}
         </a>
       </div>
 
-      <div class="blank-slate-message" ng-hide="getListByID(currentList.id).tasks.length > 0">
-        There are no tasks in {{currentList.label}}. Start by adding some tasks to this list...
-      </div>
-      <ul class="task-list" ui-sortable="sortableOptionsTasks" ng-model="getListByID(currentList.id).tasks">
-        <li class="task-list-item" ng-repeat="task in getListByID(currentList.id).tasks | filter:{text:omniBox,tagList:tagFilter}">
+      <ul class="tasks-list" ui-sortable="sortableOptionsTasks" ng-model="getListByID(currentList.id).tasks">
+        <li class="tasks-list-item tasklistitemanim" ng-repeat="task in getListByID(currentList.id).tasks | filter:{text:omniBox,tagList:tagFilter}">
           <div ng-include="'views/partialtask.html'" ng-init="sortable = true"></div>
         </li>
       </ul>
-      <div ng-init="manage=false">
-        <div class="manage-list-controls" ng-hide="manage">
-          <a ng-click="manage=true">Manage List {{getListByID(currentList.id).label}} <i class="icon-down"></i></a>
-        </div>
-        <div ng-show="manage" class="manage-list">
-          <div class="manage-list-controls">
-            <a ng-click="manage=false">Close <i class="icon-up"></i></a>
-          </div>
-          <div class="form-group" ng-hide="currentList.type == 'system'">
-            <label for="listname">List Name</label>
-            <input type="text" class="form-control" id="listname" ng-model="getListByID(currentList.id).label">
-          </div>
-          <div class="form-group">
-            <label for="listname" ng-hide="currentList.type == 'system'">Other options</label>
-            <div>
-              <a ng-click="deleteAll(currentList.id,false);" class="btn btn-warning">Delete all tasks</a> 
-              <a ng-hide="lists.length <= 1" ng-click="manage=false;deleteAll(currentList.id,true);" class="btn btn-warning">Delete list</a> 
-            </div>
-          </div>
-        </div>
-      </div>
+
     </div>
-    <!-- List views -->
+
+
+  </div>
+</div>
 
 
 
-    <div class="col-sm-8 col-md-9" ng-if="today && !searchTerm" ng-class="{hidecontent: showNavigation == true}">
-      <div class="task-list-header">
-         Shows starred items and items that are due today or tomorrow.
-      </div>
 
-      <div class="blank-slate-message" ng-hide="countTasks(1,allTasks()).today > 0">
-        <p>None of your tasks are due or starred right now.</p><p>
-      </p></div>
+<div class="today tasklistanim" ng-show="currentMode == 'today'">
 
-      <div ng-show="countTasks(1,allTasks()).due > 0">
+  <div class="max-width-box">
 
-        <div class="task-list-subsection-header">Due today or tomorrow</div>
+    <h1>Today's Tasks</h1>
 
-          <ul class="task-list">
-            <li class="task-list-item" ng-repeat="task in allTasks(2) | filter:{done:false} | orderBy:'dueDate':false">
-              <div ng-include="'views/partialtask.html'" ng-init="showTasksList = true; tagsDontLink = true;"></div>
-            </li>
-          </ul>
+    <div class="tasks-list-blank-slate-message" ng-hide="countTasks(1,allTasks()).today > 0">
+      <p>None of your tasks are due or starred right now.</p><p>
+    </p></div>
 
-      </div>
+    <div ng-show="countTasks(2,allTasks(2)).due > 0">
+      <div class="today-tasks-list-subsection-header">Due today or tomorrow</div>
 
-      <div ng-show="countTasks(0,allTasks()).starred > 0">
-        <div class="task-list-subsection-header">Starred</div>
-
-
-        <ul class="task-list">
-          <li class="task-list-item" ng-repeat="task in allTasks() | filter:{done:false,starred:true}">
+        <ul class="tasks-list">
+          <li class="tasks-list-item" ng-repeat="task in allTasks(2) | filter:{done:false} | orderBy:'dueDate':false track by task.UUID">
             <div ng-include="'views/partialtask.html'" ng-init="showTasksList = true; tagsDontLink = true;"></div>
           </li>
         </ul>
 
+    </div>
+
+    <div ng-show="countTasks(0,allTasks()).starred > 0">
+      <div class="today-tasks-list-subsection-header">Starred</div>
+
+
+      <ul class="tasks-list">
+        <li class="tasks-list-item" ng-repeat="task in allTasks() | filter:{done:false,starred:true} track by task.UUID">
+          <div ng-include="'views/partialtask.html'" ng-init="showTasksList = true; tagsDontLink = true;"></div>
+        </li>
+      </ul>
+
+    </div>
+
+
+    <div ng-if="countTasks(0,allTasks()).all > 0">
+      <!-- iterating over custom lists -->
+      <div class="today-tasks-list-subsection-header">
+        Top task from each list
       </div>
 
 
-      <div ng-if="countTasks(0,allTasks()).all > 0">
-        <!-- iterating over custom lists -->
-        <div class="task-list-subsection-header">
-          Top task from each list
-        </div>
 
-
-        <div ng-repeat="list in lists" ng-if="list.tasks.length > 0">
-
-
-          <ul class="task-list">
-            <li class="task-list-item" ng-repeat="task in list.tasks | limitTo:1">
-              <div ng-include="'views/partialtask.html'" ng-init="showTasksList = true; tagsDontLink = true;"></div>
-            </li>
-          </ul>
-
-        </div>
-
-      </div>
+      <ul class="tasks-list">
+        <li class="tasks-list-item" ng-repeat="task in todaysTasks() track by task.UUID">
+          <div ng-include="'views/partialtask.html'" ng-init="showTasksList = true; tagsDontLink = true;"></div>
+        </li>
+      </ul>
 
 
     </div>
+
   </div>
 </div>
 
@@ -151,18 +158,37 @@
 
 <!-- search results view -->
 
-<div class="container" ng-show="searchTerm">
-  <div class="row">
-    <div class="col-sm-12">
-      <div class="task-list-header">
-        Search for {{searchTerm}}<a ng-click="searchTerm = '';" class="pull-right">Clear Search</a>
+<div ng-show="currentMode == 'search'" class="search searchanim">
+  <div class="max-width-box">
+    
+    <div class="row">
+      <div class="col-sm-6">
+        <h1>All Tasks</h1>
       </div>
-      <ul class="task-list" ng-if="searchTerm">
-        <li class="task-list-item" ng-repeat="task in allTasks() | filter:searchTerm">
-          <div ng-include="'views/partialtask.html'" ng-init="showTasksList = true; tagsDontLink = true;"></div>
-        </li>
-      </ul>
+      <div class="col-sm-6">
+
+        <div class="input-group search-input" ng-init="searchTerm = ''">
+           <span class="input-group-addon"><i class="icon-search"></i></span>
+          <input type="text" ng-model="searchTerm" placeholder="Filter all tasks..." class="form-control">
+        </div>
+
+      </div>
     </div>
+    
+
+
+    <div class="tasks-tag-filter" ng-show="getTags().length > 0">
+      <a ng-click="changeTagFilter()" class="pull-right tasks-clear-tag-filter" ng-show="tagFilter"><i class="icon-cancel"></i></a>
+      <a ng-click="changeTagFilter(tag)" class="tag-filter-item-link" ng-repeat="tag in getTags()" ng-class="{active: tagFilter == tag}">
+        {{tag}}
+      </a>
+    </div>
+
+    <ul class="tasks-list">
+      <li class="tasks-list-item" ng-repeat="task in allTasks() | filter:{text:searchTerm,tagList:tagFilter} track by task.UUID" ng-hide="!task">
+        <div ng-include="'views/partialtask.html'" ng-init="showTasksList = true;"></div>
+      </li>
+    </ul>
   </div>
 </div>
 
@@ -171,70 +197,57 @@
 
 
 <!-- task view -->
-<div class="container" ng-if="currentTask && !searchTerm">
+<div ng-show="currentTask" class="task taskanim">
 
-  <div class="task-list-header">
-    <a ng-click="showList(getListByID(currentTask.list));">{{getListByID(currentTask.list).label}}</a> / task
-    <a ng-click="showTask();" class="pull-right"><i class="icon-cancel"></i> Close</a>
-  </div>
+  <div class="task-panel">
 
-  <form name="taskForm" class="taskForm">
+    <div class="max-width-box">
 
-    <div class="row">
-      <div class="col-sm-8">
+      <a class="pull-right" ng-click="updateTask(currentTask); showTask(false);" ng-show="currentTask">
+        <i class="icon-cancel"></i>
+      </a>
+
+      <form name="taskForm" class="task-form" ng-submit="updateTask(currentTask); showTask(false);">
 
         <div class="form-group">
           <label for="text">Task</label>
-          <input id="text" ng-model="getTask(currentTask).text" class="form-control" type="text" required="">
+          <input id="text" ng-model="currentTask.text" class="form-control" type="text" required="">
           <span class="help-block">Supports hashtags like #office or #shopping</span>
         </div>
-        <p>
-          <div class="tag-filter-item" ng-repeat="tag in tags(getTask(currentTask))">
-            {{tag}}
-          </div>
-        </p>
         <div class="form-group">
           <label for="description">Notes</label>
-          <textarea id="description" class="form-control" rows="3" ng-model="getTask(currentTask).description"></textarea>
+          <textarea id="description" rows="3" ng-model="currentTask.description"></textarea>
         </div>
         <div class="form-group">
           <div class="row">
             <div class="col-sm-6">
               <label for="duedate">Due Date</label>
-              <div ng-class="{'input-group': getTask(currentTask).dueDate}">
-                <input id="duedate" placeholder="e.g. 10/24/2016" class="form-control" ng-model="getTask(currentTask).dueDate" type="text">
-                <span class="input-group-btn" ng-show="getTask(currentTask).dueDate">
-                  <button class="btn btn-default" ng-click="setDueDate(currentTask)" type="button">Remove</button>
+              <div ng-class="{'input-group': currentTask.dueDate}">
+                <input id="duedate" placeholder="e.g. 10/24/2016" class="form-control" ng-model="currentTask.dueDate" type="text">
+                <span class="input-group-btn" ng-show="currentTask.dueDate">
+                  <button class="btn btn-warning" ng-click="setDueDate(currentTask)" type="button">Remove</button>
                 </span>
               </div>
               <span class="help-block">
                 <a ng-click="setDueDate(currentTask,0)">Today</a>,
                 <a ng-click="setDueDate(currentTask,1)">Tomorrow</a>, 
-                <a ng-click="setDueDate(currentTask,2)">in 2 days</a>, 
-                <a ng-click="setDueDate(currentTask,3)">3 days</a>, 
-                <a ng-click="setDueDate(currentTask,7)">Next Week</a>, 
+                <a ng-click="setDueDate(currentTask,2)">In 2 days</a>, 
+                <a ng-click="setDueDate(currentTask,3)">In 3 days</a>, 
+                <a ng-click="setDueDate(currentTask,7)">Next week</a>, 
                 <a ng-click="setDueDate(currentTask,30)">In a month</a> 
                 </span>
             </div>
           </div>
         </div>
 
-      </div>
-
-      <div class="col-sm-4">
-        <label>Task List</label>
-        <div class="list-group">
-          <a class="list-group-item" ng-class="{active: currentTask.list == list.id}" ng-repeat="list in lists" ng-click="moveTaskToList(currentTask,list.id);">
-            {{list.label}}
-          </a>
+        <div>
+          <button type="submit" class="btn btn-primary">Save &amp Close</button>
         </div>
 
-      </div>
+      </form>
 
     </div>
-
-  </form>
-
+  </div>
 </div>
 
 <!-- task view end-->
