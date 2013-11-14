@@ -13,7 +13,7 @@
 
   <span ng-show="unsavedData" class="saving-message"><span class="loadingSpinner"></span><span class="hiddenwhensmall"> Syncing</span></span>
 
-  <a ng-show="firebase" ng-click="logout()" class="title-bar-link pull-right">Logout</a>
+  <a ng-click="switchMode('options')" class="title-bar-link pull-right"><i class="icon-dots"></i></a>
 
   <span>
     <a class="title-bar-link pull-right" ng-click="switchMode('search')" ng-class="{active: currentMode == 'search'}" ng-hide="allTasks() == false || allTasks().length == 0">
@@ -26,10 +26,6 @@
   </span>
 
 </div>
-
-
-
-
 
 
 <!-- List views -->
@@ -255,3 +251,40 @@
 </div>
 
 <!-- task view end-->
+
+
+<!-- app options view -->
+
+<div ng-show="currentMode == 'options'" class="app-options rightpanel">
+  <div class="max-width-box">
+
+    <div ng-show="firebase">
+      <h1>Options</h1>
+      <p ng-show="firebase">
+        <button ng-click="logout()" class="btn btn-primary">Logout</button>
+      </p>
+    </div>
+
+    <h1>Import &amp Export your Data</h1>
+    <p>
+      <textarea ng-model="jsonData" rows="10" placeholder="You can import and export raw data dumps of all your tasks and lists here. WARNING: Importing invalid data can corrupt your data. There is no undo!"></textarea>
+    </p>
+    <p>
+      <span ng-hide="confirmInput">
+        <a class="pull-right clear-json-data-input-link" ng-show="jsonData" ng-click="jsonData = ''"><i class="icon-cancel"></i> Clear</a>
+        <button class="btn btn-primary" ng-click="exportData();"><i class="icon-cloud-download"></i> Export Data</button>
+        <button ng-hide="confirmInput" class="btn btn-primary" ng-click="confirmInput=true;"><i class="icon-cloud-upload"></i> Import Data</button>
+      </span>
+      <span ng-show="confirmInput">
+        <button class="btn btn-danger" ng-click="importData(jsonData); jsonData = ''; confirmInput=false;"><i class="icon-cloud-upload"></i> Confirm Data Import</button>
+        <button class="btn btn-primary" ng-click="confirmInput=false;"><i class="icon-cloud-upload"></i> Cancel</button>
+      </span>
+    </p>
+
+    <p class="app-optons-about-text">
+      &#169; 2013 <a href="http://simplydo.com" target="new">Simply Do</a>. All rights reserved.
+    </p>
+
+
+  </div>
+</div>
