@@ -11,7 +11,7 @@
 
   </div>
 
-  <form ng-init="showListAddForm=false" name="addListForm" ng-show="showListAddForm" class="list-nav-add-list-form" ng-submit="createList(listInput); showListAddForm=''; listInput='';">
+  <form ng-init="showListAddForm=false;" name="addListForm" ng-show="showListAddForm" class="list-nav-add-list-form" ng-submit="showListAddForm=''; createList(listInput); ">
     <div class="input-group">
       <input type="text" ng-model="listInput" placeholder="Create a new list..." class="form-control" required="">
       <span class="input-group-btn">
@@ -19,21 +19,13 @@
       </span>
     </div>
     <div class="list-nav-add-list-form-close">
-      <a class="" ng-click="showListAddForm=!showListAddForm">
+      <a ng-click="showListAddForm=!showListAddForm">
         <i class="icon-up"></i> Close Panel
       </a>
     </div>
   </form>
 
   <div class="list-nav-item-container">
-
-   <a ng-click="switchMode('today')" class="list-nav-today" ng-class="{active: currentMode == 'today'}">
-      Today
-    </a>
-
-    <a class="list-nav-search" ng-click="switchMode('search')" ng-class="{active: currentMode == 'search'}">
-      <i class="icon-search"></i> Search / All
-    </a>
 
     <div ng-show="lists.length > 0" ui-sortable="sortableOptionsLists" ng-model="lists" class="list-nav-sortable-container">
 

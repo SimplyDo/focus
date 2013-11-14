@@ -36,7 +36,7 @@
     <i ng-show="task.starred" class="icon-star-true"></i>
   </a>
 
-  <a ng-click="moveTask = !moveTask;" ng-hide="task.done" class="tasks-list-item-file">
+  <a ng-click="moveTask = !moveTask;" ng-hide="task.done || lists.length <= 1" class="tasks-list-item-file">
     <i ng-hide="moveTask" class="icon-down"></i>
     <i ng-show="moveTask" class="icon-up"></i>
   </a>

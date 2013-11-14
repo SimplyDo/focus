@@ -6,10 +6,24 @@
 <div class="title-bar">
 
   <a class="title-bar-link" ng-mouseenter="toggleListNavigation();" ng-click="toggleListNavigation();">
-    Task Lists <i class="icon-right"></i>
+    <i class="icon-list-section list-nav-item-icon"></i>
+    <span class="hiddenwhensmall"> Task Lists</span>
+    <i class="icon-right"></i>
   </a>
 
-  <a ng-click="logout()" class="title-bar-link pull-right">Logout</a>
+  <span ng-show="unsavedData" class="saving-message"><span class="loadingSpinner"></span><span class="hiddenwhensmall"> Syncing</span></span>
+
+  <a ng-show="firebase" ng-click="logout()" class="title-bar-link pull-right">Logout</a>
+
+  <span>
+    <a class="title-bar-link pull-right" ng-click="switchMode('search')" ng-class="{active: currentMode == 'search'}" ng-hide="allTasks() == false || allTasks().length == 0">
+      <i class="icon-all"></i><span class="hiddenwhensmall"> All Tasks</span>
+    </a>
+
+    <a ng-click="switchMode('today')" class="title-bar-link pull-right" ng-class="{active: currentMode == 'today'}">
+      <i class="icon-star-false"></i><span class="hiddenwhensmall"> Today</span>
+    </a>
+  </span>
 
 </div>
 
@@ -19,7 +33,7 @@
 
 
 <!-- List views -->
-<div class="tasks tasklistanim" ng-show="currentMode == 'list'">
+<div class="tasks leftpanel" ng-show="currentMode == 'list'">
 
   <div class="max-width-box">
 
@@ -99,7 +113,7 @@
 
 
 
-<div class="today tasklistanim" ng-show="currentMode == 'today'">
+<div class="today rightpanel" ng-show="currentMode == 'today'">
 
   <div class="max-width-box">
 
@@ -158,23 +172,13 @@
 
 <!-- search results view -->
 
-<div ng-show="currentMode == 'search'" class="search searchanim">
+<div ng-show="currentMode == 'search'" class="search rightpanel">
   <div class="max-width-box">
-    
-    <div class="row">
-      <div class="col-sm-6">
-        <h1>All Tasks</h1>
-      </div>
-      <div class="col-sm-6">
 
-        <div class="input-group search-input" ng-init="searchTerm = ''">
-           <span class="input-group-addon"><i class="icon-search"></i></span>
-          <input type="text" ng-model="searchTerm" placeholder="Filter all tasks..." class="form-control">
-        </div>
-
-      </div>
+    <div class="input-group search-input" ng-init="searchTerm = ''">
+       <span class="input-group-addon"><i class="icon-search"></i></span>
+      <input type="text" ng-model="searchTerm" placeholder="Filter all tasks..." class="form-control">
     </div>
-    
 
 
     <div class="tasks-tag-filter" ng-show="getTags().length > 0">
@@ -185,7 +189,7 @@
     </div>
 
     <ul class="tasks-list">
-      <li class="tasks-list-item" ng-repeat="task in allTasks() | filter:{text:searchTerm,tagList:tagFilter} track by task.UUID" ng-hide="!task">
+      <li class="tasks-list-item" ng-repeat="task in allTasks() | filter:{text:searchTerm,tagList:tagFilter}" ng-hide="!task">
         <div ng-include="'views/partialtask.html'" ng-init="showTasksList = true;"></div>
       </li>
     </ul>
