@@ -261,7 +261,7 @@
     <div ng-show="firebase">
       <h1>Options</h1>
       <p ng-show="firebase">
-        <button ng-click="logout()" class="btn btn-primary">Logout</button>
+        <button ng-click="logout()" class="btn btn-success">Logout</button>
       </p>
     </div>
 
@@ -269,17 +269,17 @@
     <p>
       <textarea ng-model="jsonData" rows="10" placeholder="You can import and export raw data dumps of all your tasks and lists here. WARNING: Importing invalid data can corrupt your data. There is no undo!"></textarea>
     </p>
-    <p>
-      <span ng-hide="confirmInput">
-        <a class="pull-right clear-json-data-input-link" ng-show="jsonData" ng-click="jsonData = ''"><i class="icon-cancel"></i> Clear</a>
-        <button class="btn btn-primary" ng-click="exportData();"><i class="icon-cloud-download"></i> Export Data</button>
-        <button ng-hide="confirmInput" class="btn btn-primary" ng-click="confirmInput=true;"><i class="icon-cloud-upload"></i> Import Data</button>
-      </span>
-      <span ng-show="confirmInput">
+    
+      <p>
+        <a class="pull-right clear-json-data-input-link" ng-show="jsonData" ng-click="jsonData = ''; confirmInput=false"><i class="icon-cancel"></i> Clear</a>
+        <button class="btn btn-success" ng-click="exportData();"><i class="icon-cloud-download"></i> Export Data</button>
+        <button ng-show="jsonData" class="btn btn-success" ng-click="confirmInput=!confirmInput;"><i class="icon-cloud-upload"></i> Import Data</button>
+      </p>
+      <p ng-show="confirmInput">
         <button class="btn btn-danger" ng-click="importData(jsonData); jsonData = ''; confirmInput=false;"><i class="icon-cloud-upload"></i> Confirm Data Import</button>
-        <button class="btn btn-primary" ng-click="confirmInput=false;"><i class="icon-cloud-upload"></i> Cancel</button>
-      </span>
-    </p>
+        <button class="btn" ng-click="confirmInput=false;"><i class="icon-cancel"></i> Cancel</button>
+      </p>
+    
 
     <p class="app-optons-about-text">
       &#169; 2013 <a href="http://simplydo.com" target="new">Simply Do</a>. All rights reserved.
